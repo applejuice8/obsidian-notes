@@ -277,7 +277,7 @@ main =
 # Boolean Data Type
 ```haskell
 data Bool = False | True
--- Data
+-- Data type 
 -- Type constructor = Data constructor | Data constructor
 ```
 
