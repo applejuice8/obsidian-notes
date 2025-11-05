@@ -155,7 +155,7 @@ concat ["Hello ", "World"]
 
 ## Cons Operator (:)
 - Used to build list
-- Reversed append()
+- prepend
 - a : b (Append a to b)
 ```haskell
 (:) :: a -> [a] -> [a]
@@ -330,6 +330,32 @@ a = 5
 
 b :: Double
 b = fromIntegral a / 2.0
+```
+
+## Tuples
+```haskell
+showPerson :: (String, Int) -> String
+showPerson (name, age) = name ++ " is " ++ age ++ " years old."
+
+divide :: Int -> Int -> (Int, Int)
+divide x y = (x `div` y, x `mod` y)
+```
+
+## Lists
+- All elements must have same type
+```haskell
+nums :: [Int]
+nums = [1, 2, 3]
+nums = 1 : 2 : 3 : []  -- Same with cons operator
+
+-- Ranges
+[1..5]  -- [1,2,3,4,5]
+[2,4..10]  -- [2,4,6,8,10]
+[10,9..4]  -- [10,9,8,7,6,5,4]
+
+-- Infinite list
+[1..]  -- [1,2,3, ...]
+take 5 [1..]   -- [1,2,3,4,5]
 ```
 
 ---
