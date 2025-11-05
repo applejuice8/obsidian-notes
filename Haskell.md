@@ -274,12 +274,157 @@ main =
 
 ---
 
-# Boolean Data Type
+# Data Types
+## Boolean
 ```haskell
 data Bool = False | True
--- Data type 
 -- Type constructor = Data constructor | Data constructor
+-- Type constructor (Data type Type name)
 ```
 
+## Numeric Types
+- Every Int, Integer is an Integral
+- Every Integral, Fractional is a Num
+- Every Float, Double is a Fractional
+![Numeric Types](https://ksvi.mff.cuni.cz/~dingle/2022-3/npp/haskell_numeric.svg)
 
-hello
+```haskell
+-- Integral Numbers
+x :: Int  -- 64 bit
+x = 5
+
+y :: Integer  -- Arbitrary large
+y = 123456789012345678901234567890
+
+
+
+-- Fractional Numbers
+piF :: Float  -- 32 bit
+piF = 3.14
+
+piD :: Double  -- 64 bit
+piD = 3.141592653589793
+
+import Data.Ratio
+half :: Ratio Int
+half = 3 % 4  -- 3/4 exactly, no rounding
+
+import Data.Scientific
+x :: Scientific
+x = 12345e-3  -- 12.345 as Scientific
+
+
+
+-- Complex Numbers
+import Data.Complex
+z :: Complex Double  -- Complex number with real, imaginary parts
+z = 2 :+ 3  -- 2 + 3i
+```
+
+```haskell
+-- Conversion between numeric types
+fromIntegral :: (Integral a, Num b) => a -> b
+
+a :: Int
+a = 5
+
+b :: Double
+b = fromIntegral a / 2.0
+```
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## OR
+```haskell
+data Direction = North | South | East | West
+
+go :: Direction -> String
+go North = "Up"
+go South = "Down"
+go East = "Right"
+go West = "Left"
+```
+
+## AND
+```haskell
+Person :: String -> Int -> Person
+data Person = Person String Int
+
+alice = Person "Alice" 25
+
+-- Deconstruct
+getName :: Person -> String
+getName (Person name age) = name
+
+getName (Person "Eve" 22)  -- Eve
+```
+
+## AND with OR
+```haskell
+data Shape
+	= Circle Float  -- Radius
+	| Rectangle Float Float  -- Width, height
+	| Triangle Float Float Float  -- 3 sides
+
+-- Deconstruct
+area :: Shape -> Float
+area (Circle r) = pi * r * r
+area (Rectangle w h) = w * h
+area (Triangle a b c) =
+  let s = (a + b + c) / 2
+  in sqrt (s * (s - a) * (s - b) * (s - c))
+```
+
+## Can be General
+```haskell
+data Pair a b = Pair a b
+Pair 1 "hello"  -- Pair Int String
+Pair True False  -- Pair Bool Bool
+```
+
+---
+
+# Monads (Maybe, Either)
+## Maybe
+```haskell
+data Maybe a = Nothing | Just a
+
+safeDiv :: Int -> Int -> Maybe Int
+safeDiv _ 0 = Nothing  -- Division by zero won't error
+safeDiv x y = Just (x `div` y)
+```
+
+## Either
+```haskell
+data Either a b = Left a | Right b
+
+safeDiv :: Int -> Int -> Either String Int
+safeDiv _ 0 = Left "Cannot divide by zero"  -- Left for String
+safeDiv x y = Right (x `div` y)  -- Right for Int
+```
+
+---
+
