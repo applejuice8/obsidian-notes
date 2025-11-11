@@ -75,16 +75,12 @@
 ---
 
 My First Hackathon
-Last Saturday (8 November 2025), I participated in the `Logitech Mini Hackathon` organized by `Sunway Tech Club`, `Logitech` and `GDG Cloud KL`.
+Last Saturday, I had the chance to participate in a Mini Hackathon organized by `Sunway Tech Club`, `Logitech` and `GDG Cloud KL`, with `AMD` sponsoring laptops and lucky draw prizes. We also had the opportunity to use the new Logitech MX Master 4 mouse, equipped with haptic feedback, it was definitely worth the hype.
 
-I had the honour to be a part of an elite team alongside `Tan Wen Zhe`, `Joe`, `Adam` and `Pei Jia`.
+I had the honour to be a part of a dedicated and collaborative team alongside `Tan Wen Zhe`, `Joe`, `Adam` and `Pei Jia`. Together, we built a fully local LLM using `Ollama`, `Gemma3`, `ChromaDB` and `Streamlit`. No API calls, no internet delays, completely offline and private. To enhance user experience, we also created a UI using `React`, which provided more flexibility and control compared to `Streamlit`.
 
-We built a local LLM using `Ollama`, `Gemma3` and `Streamlit`, completely offline. We also designed and created a fantastic UI with `React`, aiming to enhance user experience.
+Much appreciation goes to `Spyros Kyriazatis` and `Leong Lai Fong` for their active interactions with participants, guiding us throughout the hackathon.
 
-Much appreciation goes to `Spyros Kyriazatis` and `Leong Lai Fong` for their active interactions with participants, guiding us throughout the process.
-
-The haptic feedback on the Logitech MX Master 4 is game-changing, enhancing developers' productivity.
-
-Last but not least, thank you `AMD` for the lucky draw gifts.
+Overall, it was a very exciting and fun event. Definitely looking forward to participating in more hackathons and continue learning from the community.
 
 #Logitech #Hackathon #GDGCloudKL #AMD #LocalLLM #Ollama #Gemma3 #Streamlit #React
