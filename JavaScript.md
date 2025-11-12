@@ -422,4 +422,75 @@ function Person(firstName, lastName, age) {
 const person1 = new Person('John', 'Cena', 10);
 ```
 
+---
+
+# Arrays
+```javascript
+// Method 1
+const cars = ['BMW', 'Mercedes', 'Volvo'];
+
+// Method 2
+const cars = [];
+cars[0] = 'BMW';
+cars[1] = 'Mercedes';
+```
+
+## Array Methods
+```javascript
+cars.toString();  // BMW,Mercedes,Volvo
+cars.join(' * ');  // BMW * Mercedes * Volvo
+cars.length;
+cars.sort();
+cars.concat(arr1, arr2);
+
+cars.unshift('abc');  // Add front
+cars.push('abc');  // Add last
+c = cars.pop();  // Last
+c = cars.shift();  // First
+
+cars.copyWithin(2, 1);  // Copy to index 2, all elements from index 1
+cars.copyWithin(2, 1, 3);  // Copy to index 2, all elements from index 1 to index 3
+```
+
+## Loop Array
+```javascript
+// Method 1
+for (let i = 0; i < cars.length; i++) {
+	console.log(cars[i]);
+}
+
+// Method 2
+cars.forEach(myFunc);
+
+cars.forEach(car => console.log(car));
+
+cars.forEach(car => {
+	console.log(car);
+});
+```
+
+---
+
+# Constant Arrays, Objects
+- Can change / add element
+- But cannot reassign
+```javascript
+const cars = ['Saab', 'Volvo', 'BMW'];
+
+// Can
+cars[0] = 'Toyota';  // Change element
+cars.push('Toyota');  // Add element
+
+// Cannot reassign array
+cars = ['Saab', 'BMW', 'Volvo'];
+```
+
+---
+
+# Animations
+```javascript
+setInterval(() => {
+	console.log('helo');
+}, 5);
+```
 
