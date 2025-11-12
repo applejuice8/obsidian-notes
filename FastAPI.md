@@ -2,6 +2,11 @@
 
 ---
 
+# FastAPI Project Structure
+[Structuring a FastAPI Project: Best Practices](https://dev.to/mohammad222pr/structuring-a-fastapi-project-best-practices-53l6)
+
+---
+
 # Installation
 ```bash
 pip install "fastapi[standard]"

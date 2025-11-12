@@ -6,6 +6,7 @@
 - CSS
 - JavaScript
 - Bootstrap
+- React
 
 # Backend
 - Python
@@ -16,6 +17,7 @@
 - SQL
 - SQLite
 - Oracle Apex
+- SQLAlchemy
 
 # Machine Learning & Data Science
 - PyTorch
@@ -50,12 +52,14 @@
 - CSS
 - JavaScript
 - Bootstrap
+- React
 - Python
 - Flask
 - FastAPI
 - SQL
 - SQLite
 - Oracle Apex
+- SQLAlchemy
 - PyTorch
 - Scikit-learn
 - Pandas
