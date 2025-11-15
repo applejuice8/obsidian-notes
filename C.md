@@ -276,3 +276,39 @@ strcpy(str2, str1);
 strcmp(str1, str2)
 ```
 
+---
+
+# User Input
+```c
+printf("Enter your age: ");
+scanf("%d", &age);
+
+// Multiple inputs
+printf("Enter two numbers: ");
+scanf("%d %d", &a, &b);
+```
+
+## Char Input
+- If no space before %c, `scanf` reads `\n (ENTER)` instead of the char
+```c
+printf("Enter a letter: ");
+scanf(" %c", &letter);  // Space before %c
+```
+
+## String Input
+- May read `\n (ENTER)` instead of string
+```c
+// Method 1 (Stops reading after whitespace) (May overflow)
+char name[50];
+printf("Enter your full name: ");
+scanf("%s", name);
+
+// Method 2
+char name[50];
+printf("Enter your full name: ");
+fgets(name, sizeof(name), stdin);
+
+// Clear buffer before reading from buffer with fgets
+while (getchar() != '\n' && getchar() != EOF);
+```
+
