@@ -7,6 +7,9 @@
 
 ---
 
+Path(..., ) means required
+Path(10, ) means optional with default value
+
 # Installation
 ```bash
 pip install "fastapi[standard]"
