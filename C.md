@@ -289,6 +289,7 @@ scanf("%d %d", &a, &b);
 ```
 
 ## Char Input
+- After we enter the char, we will click `ENTER`
 - If no space before %c, `scanf` reads `\n (ENTER)` instead of the char
 ```c
 printf("Enter a letter: ");
@@ -297,18 +298,55 @@ scanf(" %c", &letter);  // Space before %c
 
 ## String Input
 - May read `\n (ENTER)` instead of string
+- `scanf` stops reading after whitespace, cannot store input like 'hello world'
+- `scanf` may overflow, which is unsafe
 ```c
-// Method 1 (Stops reading after whitespace) (May overflow)
+// Method 1 (scanf)
 char name[50];
 printf("Enter your full name: ");
 scanf("%s", name);
 
-// Method 2
+// Method 2 (fgets)
 char name[50];
 printf("Enter your full name: ");
 fgets(name, sizeof(name), stdin);
 
 // Clear buffer before reading from buffer with fgets
 while (getchar() != '\n' && getchar() != EOF);
+```
+
+## sscanf
+```c
+char* str = "Ram Manager 30";
+
+char name[10], designation[10];
+int age;
+
+sscanf(str, "%s %s %d", name, designation, &age);
+```
+
+---
+
+# Pointers
+```c
+int age = 20;
+
+printf("%p\n", &age);  // Prints memory address (0x7ffee3b4a9c8)
+printf("%d\n", age);  // Prints value (20)
+```
+
+```c
+int age = 20;
+int* ptr = &age;  // Pointer points to age
+
+// * is dereference operator
+printf("%p\n", ptr);  // Reference (Prints memory address)
+printf("%d\n", *ptr);  // Dereference (Go to location and print value)
+```
+
+## * has 2 meanings
+```c
+int *ptr;  // Pointer variable
+printf("%d\n", *ptr);  // Dereference operator
 ```
 
