@@ -317,7 +317,7 @@ while (getchar() != '\n' && getchar() != EOF);
 
 ## sscanf
 ```c
-char* str = "Ram Manager 30";
+char *str = "Ram Manager 30";
 
 char name[10], designation[10];
 int age;
@@ -327,19 +327,28 @@ sscanf(str, "%s %s %d", name, designation, &age);
 
 ---
 
+# Math Library
+```c
+#include <math.h>
+
+printf("%f", sqrt(16));
+printf("%f", ceil(1.4));
+printf("%f", floor(1.4));
+printf("%f", pow(4, 3));
+```
+
+---
+
 # Pointers
 ```c
 int age = 20;
 
+// Method 1
 printf("%p\n", &age);  // Prints memory address (0x7ffee3b4a9c8)
 printf("%d\n", age);  // Prints value (20)
-```
 
-```c
-int age = 20;
-int* ptr = &age;  // Pointer points to age
-
-// * is dereference operator
+// Method 2 (Dereference operator)
+int *ptr = &age;  // Pointer points to location
 printf("%p\n", ptr);  // Reference (Prints memory address)
 printf("%d\n", *ptr);  // Dereference (Go to location and print value)
 ```
@@ -349,4 +358,241 @@ printf("%d\n", *ptr);  // Dereference (Go to location and print value)
 int *ptr;  // Pointer variable
 printf("%d\n", *ptr);  // Dereference operator
 ```
+
+## Pointers for Arrays
+- Array is actually pointer to the first element
+```c
+int nums[4] = {25, 50, 75, 100};
+
+// Method 1 (Directly use nums)
+printf("%d\n", *nums);  // First element (25)
+printf("%d\n", *(nums + 1));  // Second element (50)
+
+// Method 2a (Pointer doesn't move)
+int *ptr = nums;
+printf("%d\n", *ptr);  // First element (25)
+printf("%d\n", *(ptr + 1));  // Second element (50)
+
+// Method 2b (Or increment the pointer)
+int *ptr = nums;
+printf("%d\n", *ptr);
+ptr++;
+printf("%d\n", *ptr);
+```
+
+## Count Number of Elements Between
+```c
+int myNumbers[5] = {10, 20, 30, 40, 50};
+int *start = &myNumbers[1];
+int *end = &myNumbers[4];
+
+printf("%ld\n", end - start); // 3 elements apart
+```
+
+## Pointer to Pointer
+```c
+int num = 10;
+int *ptr = &num;  // int * (Pointer to int)
+int **pptr = &ptr;  // int ** (Pointer to pointer int *)
+
+printf("myNum = %d\n", num);
+printf("*ptr = %d\n", *ptr);
+printf("**pptr = %d\n", **pptr);
+```
+
+---
+
+# Functions
+```c
+void myFunc(char name[]) {
+	printf("Hello, %s\n", name);
+}
+
+// Multiple params
+int sum(int x, int y) {
+	return x + y;
+}
+```
+
+```c
+// Function declaration
+int myFunction(int x, int y);
+
+int main() {
+	myFunction();  // If no declaration, here error (Unknown func)
+	return 0;
+}
+
+// Function definition
+int myFunction(int x, int y) {
+	return x + y;
+}
+```
+
+## Inline Functions
+- Asks compiler to insert its code to where it's called, instead of jumping to it
+- Make frequently used functions a bit faster
+- Don't use for large / recursive functions
+```c
+int sum(int x, int y) {
+	return x + y;
+}
+
+inline int sum(int x, int y) {
+	return x + y;
+}
+
+// Example
+int main(void) {
+	printf("%d", sum(5, 3));  // printf("%d", 5 + 3);
+	return 0;
+}
+```
+
+---
+
+# Function Pointers
+```c
+int add(int a, int b) {
+	return a + b;
+}
+
+int method1(void) {
+	int (*ptr)(int, int) = add;
+	return ptr(5, 3);
+}
+
+int method2(int (*ptr)(int a, int b)) {
+	return ptr(5, 3);
+}
+
+int main(void) {
+	method1();
+	method2(add);
+	return 0;
+}
+```
+
+## Function Pointer Array
+- Cannot pass plain function into array
+```c
+int add(int a, int b);
+int sub(int a, int b);
+
+int main() {
+	int (*operations[2])(int, int) = { add, sub };
+
+	for (int i = 0; i < 2; i++) {
+		operations[i](5, 3);
+	}
+	return 0;
+}
+```
+
+## Allows Polymorphism
+```c
+typedef struct {
+    void (*speak)();
+} Animal;
+
+Animal dog = { dogSpeak };
+Animal cat = { catSpeak };
+
+dog.speak();
+cat.speak();
+```
+
+---
+
+# qsort()
+- Sort arrays
+```c
+int main() {
+  int numbers[] = { 5, 2, 9, 1, 7 };
+  int size = sizeof(numbers) / sizeof(numbers[0]);
+
+  qsort(numbers, size, sizeof(int), compare);
+  return 0;
+}
+```
+
+## Write Own Compare Function
+- Convert to pointer of int `(int*)a` and dereference that pointer `*(int*)a`
+- Return left if <0
+- Return right if >0
+- Unchanged if == 0
+```c
+// Ascending
+int compare_asc(const void *a, const void *b) {
+    return *(int*)a - *(int*)b;
+}
+
+// Descending
+int compare_desc(const void *a, const void *b) {
+    return *(int*)b - *(int*)a;
+}
+
+// Custom sort (Even first, then odd)
+int compare_even_first(const void *a, const void *b) {
+    int x = *(int*)a;
+    int y = *(int*)b;
+
+    if ((x % 2 == 0) && (y % 2 != 0)) return -1;  // a first (Even)
+    if ((x % 2 != 0) && (y % 2 == 0)) return 1;  // b first (Even)
+    return x - y;  // If both same even/odd, then ascending
+}
+```
+
+---
+
+# File Handling
+## Write, Append
+```c
+FILE *fp = fopen("filename.txt", "w");  // w, a
+if (fp == NULL) return 1;
+
+fprintf(fp, "Some text");
+fclose(fp);
+```
+
+## Read
+```c
+FILE *fp = fopen("filename.txt", "r");
+if (fp == NULL) return 1;
+
+char line[100];
+while(fgets(line, sizeof(line), fp)) {  // Max size to read
+	printf("%s", line);
+}
+fclose(fp);
+```
+
+## Formatted Read / Write
+```c
+// Formatted write
+FILE *fp = fopen("numbers.txt", "w");
+if (fp == NULL) return 1;
+
+char *name = "Jason", *age = "18", *contact = "123";
+fprintf(fp, "%s,%s,%s\n", name, age, contact);
+fclose(fp);
+
+// Formatted read (scanf)
+fp = fopen("numbers.txt", "r");
+if (fp == NULL) return 1;
+
+char name[50], age[10], contact[20];
+fscanf(fp, "%s,%s,%s\n", &name, &age, &contact);
+fclose(fp);
+```
+
+## fprintf() vs fput()
+```c
+fputs("Hello", fp);
+fprintf(fp, "Hello");
+
+// fprintf can format strings
+fprintf(fp, "Hello %s", name);
+```
+
 
