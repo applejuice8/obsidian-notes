@@ -188,7 +188,6 @@ class Item(BaseModel):
 ## Constraints, Validations
 ```python
 from pydantic import Field
-
 class Item(BaseModel):
     name: str = Field(
         ...,  # No default value
