@@ -19,7 +19,9 @@ pip install "fastapi[standard]"
 
 # Run Live Server
 ```bash
-fastapi dev main.py
+cd Course_Enrollment  # Run from root
+uvicorn app.main:app --reload
+python -m app.db.init_db
 ```
 
 ---
