@@ -3,6 +3,44 @@
 ---
 
 # FastAPI Project Structure
+```bash
+course-enrollment/
+├── app/
+│   ├── core/
+│   │   ├── config.py  # Config variables (DB URL, secrets)
+│   │   └── security.py  # Authentication, password hashing
+│   ├── db/
+│   │   ├── database.db
+│   │   └── database.py  # Engine, SessionLocal creation
+│   ├── models/  # SQLAlchemy ORM table models
+│   │   ├── course.py
+│   │   ├── enrollment.py
+│   │   └── student.py
+│   ├── routers/  # API endpoints
+│   │   ├── course.py
+│   │   ├── enrollment.py
+│   │   └── student.py
+│   ├── schemas/  # Pydantic models for validation
+│   │   ├── course.py
+│   │   ├── enrollment.py
+│   │   └── student.py
+│   ├── services/  # Business logic, CRUD operations
+│   │   ├── student_service.py
+│   │   ├── course_service.py
+│   │   └── enrollment_service.py
+│   ├── dependencies.py  # FastAPI dependencies (get_db)
+│   └── main.py   # FastAPI app instance, routers registration
+├── tests/  # Unit, integration tests
+│   ├── test_course.py
+│   ├── test_enrollment.py
+│   ├── test_main.py
+│   └── test_student.py
+├── .env
+├── .gitignore
+├── fast_commit.bash
+├── README.md
+└── requirements.txt
+```
 [Structuring a FastAPI Project: Best Practices](https://dev.to/mohammad222pr/structuring-a-fastapi-project-best-practices-53l6)
 
 ---
