@@ -276,10 +276,10 @@ main =
 
 # Data Types
 ## Boolean
+- Type constructor = Data constructor | Data constructor
 ```haskell
 data Bool = False | True
--- Type constructor = Data constructor | Data constructor
--- Type constructor (Data type Type name)
+-- Type constructor (Datatype Typename)
 ```
 
 ## Numeric Types
@@ -321,17 +321,6 @@ z :: Complex Double  -- Complex number with real, imaginary parts
 z = 2 :+ 3  -- 2 + 3i
 ```
 
-```haskell
--- Conversion between numeric types
-fromIntegral :: (Integral a, Num b) => a -> b
-
-a :: Int
-a = 5
-
-b :: Double
-b = fromIntegral a / 2.0
-```
-
 ## Tuples
 ```haskell
 showPerson :: (String, Int) -> String
@@ -360,7 +349,141 @@ take 5 [1..]   -- [1,2,3,4,5]
 
 ---
 
+# Currying
+- Every function in Haskell takes in exactly 1 argument, returns 1 result
+- A multi-argument function is a chain of single-argument functions
+- Allow us to partially apply a function
+```haskell
+add :: Int -> Int -> Int  -- Same as (Int -> (Int -> Int))
+add x y = x + y
 
+-- Partially application
+add5 = add 5
+add5 :: Int -> Int
+add5 y = 5 + y
+
+add5 10  -- =15
+```
+
+## Built-in Curry, Uncurry
+```haskell
+curry :: ((a, b) -> c) -> a -> b -> c
+curry f x y = f (x, y)
+
+uncurry :: (a -> b -> c) -> (a, b) -> c
+uncurry g (x,y) = g x y
+```
+
+## Manual Curry, Uncurry
+```haskell
+-- Manual curry
+f :: (a, b) -> c
+
+f' :: a -> b -> c
+f' x y = f (x, y)
+
+-- Manual uncurry
+g :: a -> b -> c
+
+g' :: (a, b) -> c
+g' (x, y) = g x y
+```
+
+---
+
+
+# Type Signature
+```haskell
+functionName :: inputType1 -> inputType2 -> ... -> outputType
+
+-- Function takes in 2 numeric types, returns 1 numeric type
+add :: Num a => a -> a -> a
+```
+
+---
+
+# Polymorphism
+- Lowercase is polymorphic, is a type variable (a, b, c)
+- Uppercase is concrete type (`Int`, `Bool`, `[Char]`)
+
+## 3 Types
+- Concrete
+- Parametric polymorphism (Fully polymorphic)
+- Constrained polymorphism (Ad-hoc polymorphic)
+
+### Parametric Polymorphism
+- Function doesn't care about the type
+- Function works exactly the same for every type
+- `a` is a type variable (It can be `Int`, `Bool`, `[Char]`, ...)
+```haskell
+pair :: a -> b -> (a, b)
+pair x y = (x, y)
+```
+
+### Constrained Polymorphism
+- `a` is still a type variable
+- But it must belong to `Num` typeclass
+- This restricts the possible types (Cannot be `Bool`, `[Char]`)
+```haskell
+add :: a -> a -> a
+add x y = x + y  -- Error, cannot +
+
+-- Constraint to Numeric
+add :: Num a => a -> a -> a
+add x y = x + y
+
+-- Multiple constraints
+add :: (Eq a, Num a) => a -> a -> a
+```
+
+---
+
+# Typeclass
+- Any data type that wants to be part of this `Shape` typeclass must provide implementations for these functions
+```haskell
+type Shape :: * -> Constraint
+class Shape a where
+	area :: a -> Double
+	perimeter :: a -> Double
+```
+
+## Typeclass Instance
+- If the data type `Circle` wants to be part of the `Shape` typeclass, must support the 2 functions
+```haskell
+data Circle = Circle Double deriving Show
+
+instance Shape Circle where
+	area (Circle r) = pi * r * r
+	perimeter (Circle r) = 2 * pi * r
+```
+
+---
+
+# Deriving
+- Compiler automatically generate instance implementations for some standard typeclasses
+```haskell
+data Color = Red | Green | Blue deriving (Show, Eq, Ord)
+
+-- Can use
+show Red
+Red == Green
+
+-- Order by defined order
+Red < Green < Blue
+```
+
+## With Derive vs Without
+```haskell
+-- With derive
+data MyBook = Book1 | Book2 deriving Show
+
+-- Without derive
+data MyBook = Book1 | Book2
+
+instance Show MyBook where
+	show Book1 = "Book1"
+	show Book2 = "Book2"
+```
 
 
 
