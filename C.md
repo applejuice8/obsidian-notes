@@ -595,4 +595,248 @@ fprintf(fp, "Hello");
 fprintf(fp, "Hello %s", name);
 ```
 
+---
+
+# typedef
+- Create new name (Alias) for an existing type
+- More understandable
+```c
+typedef float Temperature;
+
+Temperature today = 25.5;
+Temperature tomorrow = 18.6;
+```
+
+---
+
+# Structs
+```c
+struct Student {
+    char name[50];
+    int age;
+    float gpa;
+};
+
+// Method 1
+struct Student s1;
+strcpy(s1.name, "Adam Chong");  // Cannot s1.name = "Adam Chong"
+s1.age = 20;
+s1.gpa = 3.75;
+
+// Method 2
+struct Student s1 = {"Adam Chong", 20, 3.75};
+```
+
+## typedef struct (Cleaner)
+```c
+typedef struct {
+    char name[50];
+    int age;
+    float gpa;
+} Student;
+
+// Cleaner
+Student s1 = {"Adam Chong", 20, 3.75};
+```
+
+## Structs with Pointers
+```c
+Student *ptr = &s1;
+ptr->age = 25;  // s1.age = 25;
+printf("%d\n", ptr->age);
+
+// Pass pointers instead of whole struct
+void updateAge(Student *s, int newAge) {
+    s->age = newAge;
+}
+```
+
+## 3 Ways to Access Struct Members
+```c
+s1.age = 25;  // Method 1 (Direct)
+(*ptr).age = 25;  // Method 2 (Dereference the pointer)
+ptr->age = 25;  // Method 3 (Arrow operator)
+```
+
+## Struct Padding
+- Compiler add extra bytes of padding between members
+- CPU read data more efficiently when properly aligned in memory
+- `int` (4 bytes) must start at address that's multiple of 4
+- 
+```c
+// 1. 1 byte
+// 2. Address not multiple of 3 (Add 3 bytes padding)
+// 3. Size follows the largest member (Add 3 bytes padding)
+// Total = (1 + 3) + 4 + (1 + 3)
+struct Example {
+	char a;  // 1 byte
+	int b;  // 4 bytes
+	char c;  // 1 byte
+};
+
+// 1. 4 bytes
+// 2. 2 chars total 2 bytes
+// 3. Size follows the largest member (Add 2 bytes padding)
+// Total = 4 + (1 + 1 + 2)
+struct Example {
+	int b;  // 4 bytes
+	char a;  // 1 byte
+	char c;  // 1 byte
+};
+```
+
+---
+
+# Union
+- Similar to `struct`
+- But all members share same memory
+- Only 1 member is valid at a time
+- Size of union = Size of largest member
+```c
+// Method 1
+union Data {
+    int i;
+    float f;
+    char str[20];
+};
+union Data d;
+
+// Method 2 (With typedef)
+typedef union {
+    int i;
+    float f;
+    char str[20];
+} Data;
+Data d;
+
+// Only 1 member valid at a time
+d.i = 10;
+d.f = 2.5f;  // Now i becomes garbage
+```
+
+## Tagged Union
+- Union with label telling which member is currently valid
+- Accepts different data types without separate memory spaces
+```c
+typedef enum {
+    TYPE_INT,
+    TYPE_FLOAT,
+    TYPE_STRING
+} DataType;
+
+union Value {
+    int i;
+    float f;
+    char str[20];
+};
+
+typedef struct {
+    DataType type;
+    union Value data;
+} Variant;
+
+// Check type
+void printVariant(Variant v) {
+    switch (v.type) {
+        case TYPE_INT:
+            printf("int: %d\n", v.data.i);
+            break;
+        case TYPE_FLOAT:
+            printf("float: %f\n", v.data.f);
+            break;
+    }
+}
+```
+
+---
+
+# Enums (Enumeration)
+```c
+// Default (0, 1, 2)
+enum Level { LOW, MEDIUM, HIGH };
+
+// If unassigned, continue from previous
+enum Level {
+	LOW = 5,
+	MEDIUM,  // 6
+	HIGH = 19,
+	MAX  // 20
+};
+
+enum Level myLevel = MEDIUM;
+printf("%d", myLevel);  // Prints 6
+```
+
+## typedef enum
+```c
+// Without typedef  
+enum Day { MON, TUE, WED, THU, FRI, SAT, SUN };
+enum Day today = WED;
+
+// With typedef
+typedef enum { MON, TUE, WED, THU, FRI, SAT, SUN } Day;
+Day today = WED;
+```
+
+---
+
+# Static Memory vs Dynamic Memory
+## Static memory
+- Compile time memory allocation
+- Memory reserved for variables before program runs
+- Have wasted space if not fully used
+
+## Dynamic Memory
+- Runtime memory allocation
+- Memory allocated after program starts running
+- If need memory, must request manually from `heap` (`Stack` for static memory)
+```c
+// Static memory
+int students[20];
+
+// Dynamic memory
+int *arr = malloc(5 * sizeof(int));
+```
+
+---
+
+# malloc vs calloc
+- `malloc` (Memory not initialized, have garbage values)
+- `calloc` (Initialize all memory to 0)
+```c
+#include <stdlib.h>
+
+int *arr = malloc(5 * sizeof(int));
+int *arr = calloc(5, sizeof(int));
+```
+
+## Full malloc Workflow
+- Always check if `malloc` successful
+- `realloc` to expand memory size
+- If `realloc` fails, free previous memory
+- After `realloc`, don't need to free previous memory (Done automatically by `realloc`)
+```c
+#include <stdlib.h>
+
+int *arr1, *arr2;
+
+// Allocate memory
+arr1 = malloc(5 * sizeof(*arr1));
+if (arr1 == NULL) return;
+
+arr2 = realloc(arr1, 8 * sizeof(*arr1));
+if (arr2 == NULL) {
+	free(arr1);
+	return;
+}
+
+// Free memory
+free(arr2);  // Don't need to free arr1
+```
+
+---
+
+
+
+
 
