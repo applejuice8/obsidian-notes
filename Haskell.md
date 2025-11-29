@@ -472,17 +472,132 @@ Red == Green
 Red < Green < Blue
 ```
 
-## With Derive vs Without
+## With Deriving vs Without
 ```haskell
--- With derive
-data MyBook = Book1 | Book2 deriving Show
+-- With deriving
+data MyBook = Book1 | Book2 deriving Eq
 
--- Without derive
+-- Without deriving
 data MyBook = Book1 | Book2
 
-instance Show MyBook where
-	show Book1 = "Book1"
-	show Book2 = "Book2"
+instance Eq MyBook where
+	Book1 == Book1 = True
+	Book2 == Book2 = True
+	_ == _ = False
+```
+
+---
+
+# Type Constraint
+```haskell
+-- Doesn't have any utility, raises error
+add :: a -> a -> a
+add x y = x + y
+
+-- Constraint to Num type class, allow arithmetic operations
+add :: Num a => a -> a -> a
+add x y = x + y
+
+-- Constraint to Ord type class, allow comparisons
+addSpecial :: (Num a, Ord a) => a -> a -> a
+addSpecial x y = 
+	if x > 1
+	then x + y
+	else x
+```
+
+---
+
+# Functions
+```haskell
+triple :: Integer -> Integer
+triple x = x * 3
+
+-- Anonymous function
+(\x -> x * 3) :: Integer -> Integer
+```
+
+## Function Composition
+```haskell
+-- Without function composition
+process xs = reverse (sort (filter even xs))
+
+-- With function composition
+process = reverse . sort . filter even
+```
+
+---
+
+# Pattern Matching
+```haskell
+isItTwo :: Integer -> Bool
+isItTwo 2 = True
+isItTwo _ = False
+
+-- Tuple
+fst3 :: (a, b, c) -> a
+fst3 :: (x, _, _) = x
+```
+
+## Case Expression
+```haskell
+area shape =
+    case shape of
+        Circle r -> pi * r * r
+        Rect w h -> w * h
+        _ -> 0
+```
+
+---
+
+# Guards
+```haskell
+-- With guards
+absolute :: Int -> Int
+absolute x
+    | x < 0     = -x
+    | otherwise = x
+
+-- Inline if
+absolute :: Int -> Int
+absolute x = if x <0 then -x else x
+```
+
+## Long Example
+```haskell
+bmiTell :: Double -> Double -> String
+bmiTell weight height
+    | bmi <= 18.5 = "underweight"
+    | bmi <= 25.0 = "normal"
+    | bmi <= 30.0 = "overweight"
+    | otherwise   = "obese"
+  where
+    bmi = weight / height^2
+```
+
+---
+
+# Recursion
+```haskell
+fac :: Int -> Int
+fac 0 = 1
+fac n = n * fac(n - 1)
+
+-- Recursion on list
+product :: Num a => [a] -> a
+product[] = 1
+product(x:xs) = x * product xs
+```
+
+## Mutual Recursion
+```haskell
+even :: Int -> Bool
+even 0 = True
+even n = odd (n - 1)
+
+odd :: Int -> Bool
+odd 0 = False
+odd n = even (n - 1)
 ```
 
 
