@@ -600,6 +600,86 @@ odd 0 = False
 odd n = even (n - 1)
 ```
 
+---
+
+# Lists
+```haskell
+[1..5]  -- [1, 2, 3, 4, 5]
+['t'..'z']  -- "tuvwxyz"
+```
+
+## Functions on List
+```haskell
+-- Return first few
+take :: Int -> [a] -> [a]
+take 3 [1..7]  -- [1, 2, 3]
+
+-- Drop first few, Return rest
+drop :: Int -> [a] -> [a]
+drop 3 [1..7]  -- [4, 5, 6, 7]
+
+-- Split list
+splitAt :: Int -> [a] -> ([a], [a])
+splitAt 2 [1..7]  -- ([1, 2], [3, 4, 5, 6, 7])
+splitAt 0 [1, 2, 3]  -- ([], [1, 2, 3])
+```
+
+## takeWhile, dropWhile
+```haskell
+takeWhile :: (a -> Bool) -> [a] -> [a]
+takeWhile (<3) [1..10]  -- take 2 [1..10]
+
+dropWhile :: (a -> Bool) -> [a] -> [a]
+dropWhile (<3) [1..10]  -- drop 2 [1..10]
+```
+
+---
+
+# List Comprehensions
+- `x <- [1..9]` is called generator
+```haskell
+-- In maths {x^2 ∣ x ∈ {1, .., 9}}
+[x^2 | x <- [1..9]]  -- [1, 4, 9, 16, 25, ...]
+map (\x -> x^2) [1..9]  -- Syntactic sugar for map function
+
+-- With filters
+[x | x <- [0..19], x `mod` 2 == 0]
+```
+
+## Nested Loops
+```haskell
+-- Example (Pythagorean triples)
+[(a,b,c) |
+    a <- [1..20],
+    b <- [a..20],
+    c <- [b..20],
+    a*a + b*b == c*c
+]
+```
+
+## List Functions
+```haskell
+-- Flatten a list of lists
+concat :: [[a]] -> [a]
+concat xss :: [x | xs <- xss, x <- xs]
+
+-- Maps 2 lists to a list of pairs
+zip :: [a] -> [b] -> [(a, b)]
+zip ['a', 'b'] [1, 2, 3]  -- [('a', 1), ('b', 2)]
+```
+
+## Prime Numbers
+```haskell
+factors :: Int -> [Int]
+factors n = [x | x <- [1..n], n `mod` x == 0]
+
+prime :: Int -> Bool
+prime n = factors n == [1, n]
+
+primes :: Int -> [Int]
+primes n = [x | x <- [2..n], prime x]
+```
+
 
 
 
