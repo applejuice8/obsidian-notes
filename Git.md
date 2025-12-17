@@ -11,14 +11,30 @@
 git config --global user.name Jason
 git config --global user.email jason123@gmail.com
 git config --global init.defaultBranch main
+
+# Check config
+git config --list
 ```
 
 ---
 
 # git init
+- Creates new Git repo in current folder
 ```bash
-cd myFolder
 git init
+```
+
+# git clone
+- Copy a remote repo
+```bash
+git clone https://github.com/applejuice8/course-enrollment.git
+```
+
+# git remote add origin
+- Go to GitHub repo, click Code, copy link
+- Connect local git to remote git
+```bash
+git remote add origin https://github.com/applejuice8/portfolio.git
 ```
 
 ---
@@ -30,11 +46,20 @@ git status -s
 
 '''
 M  file1.js  # Left M (All changes in staging area)
-MM file1.js  # Right M (Changes not in staging area)
+ M file1.js  # Right M (Changes not in staging area)
 
 ?? file2.js  # File not in staging area
 A  file2.js  # Added new file
 '''
+```
+
+---
+
+# git diff
+- See changes in file
+```bash
+git diff
+git diff --staged  # See changes that are staged
 ```
 
 ---
@@ -56,9 +81,8 @@ git add .  # Add all
 ```bash
 git commit -m 'Initial commit'
 
-git commit  # Opens default editor to type longer messages
-
-git commit -am 'Fixed bugs'  # Skip staging area, add and commit all files
+# Ammend last commit
+git commit --amend -m "Updated commit message"
 ```
 
 ---
@@ -92,23 +116,6 @@ git checkout main  # Go back
 # Switch branch
 git checkout main
 git checkout feature/login
-```
-
----
-
-# git remote add
-- Go to GitHub repo, click Code, copy link
-- If project folder in local
-```bash
-git remote add origin https://github.com/applejuice8/portfolio.git
-```
-
----
-
-# git clone
-- If project folder not in local
-```bash
-git clone https://github.com/applejuice8/portfolio.git
 ```
 
 ---
@@ -161,8 +168,6 @@ git checkout -b feature/login  # 2 in 1
 
 git branch  # See at which branch
 
-git branch new-branch source-branch  # Explicitly name source branch
-
 git branch -M main  # Name current branch as main
 
 git branch -d feature/login  # Delete branch
@@ -175,20 +180,11 @@ git branch -d feature/login  # Delete branch
 - Merge on remote repository (GitHub)
 - After create new branch, can go GitHub click `Create pull request`
 - Team lead can review and merge pull request
-- If want to view the merged code, need `git pull`
 
 ## 2. git merge
 ```bash
 git checkout main
 git merge feature/login
-```
-
----
-
-# Resolve Merge Conflicts
-```bash
-git checkout main
-git pull
 ```
 
 ---
@@ -202,24 +198,8 @@ file1.js
 
 ---
 
-# git rm
-
+# git reset
+- Undo all changes, go back to previous commit
 ```bash
-rm  # Remove from directory but still in staging area
-
-git rm file1.txt file2.txt  # Remove from directory and staging area
-
-git rm -cached file1.txt file2.txt  # Only remove from staging area
-git rm -cached -r myFolder  # Recursive for folders
-```
-
----
-
-# git mv
-```bash
-git mv file1.txt main.js  # Rename file1.txt to main.js
-
-# If normal Linux command
-mv file1.txt main.js
-git add file1.txt main.js
+git reset .
 ```
