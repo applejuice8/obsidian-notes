@@ -662,6 +662,7 @@ async def square_number(
 ---
 
 # Enums
+- Additional inheritance with `str`
 ```python
 from enum import Enum
 

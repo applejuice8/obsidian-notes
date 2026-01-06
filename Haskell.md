@@ -2,28 +2,28 @@
 
 ---
 
-# ghci
+# GHCi
 ```bash
 ghci  # Start ghci interactive program
 
 :q  # :quit
 
-:l  # :load  # Load source file to ghci
+:l  # Load source file to ghci
 :l file.hs  # Load script to ghci
 :reload  # Reload current script
 
 :edit name  # Edit script name
 
-:type expr  # Type of expression
+:t expr  # Typeclass of expression
 
 :?  # Show all commands
 
-:i  # :info  # See associativity, precedence
+:i  # See associativity, precedence
 ```
 
 ---
 
-# Hello
+# GHCi
 ```haskell
 -- test.hs
 sayHello :: String -> IO ()
@@ -36,6 +36,35 @@ ghci> :l test.hs
 ghci> sayHello "Haskell"
 
 Hello, Haskell!
+```
+
+---
+
+# Run with Cabal
+- Cabal only executes `main` method, must have
+
+## Commands
+```bash
+cabal init
+cabal build
+cabal run
+```
+
+## Add to Cabal File
+```haskell
+main-is: Main.hs
+
+-- Other files (Config.hs, Types.hs, Game.hs)
+other-modules: Config,
+				Types,
+				Game
+
+-- External libraries	
+build-depends: base ^>=4.18.3.0,
+				ansi-terminal,
+				csv,
+				directory,
+				time
 ```
 
 ---
@@ -96,7 +125,7 @@ ghci> res = x + y
 
 ---
 
-# $
+# $ Operator
 - Like function application
 - But right associative instead of left
 ```haskell
@@ -116,7 +145,8 @@ myFunc =
 	in x * y
 
 -- where
-myFunc = x * y
+myFunc = 
+		x * y
 	where
 		x = 1 + 1
 		y = 2 + 2
@@ -136,18 +166,18 @@ putStrLn :: String -> IO ()
 putStrLn "Hello"
 
 -- Without newline
-putStrLn :: String -> IO ()
+putStr :: String -> IO ()
 putStr "Hello"  
 ```
 
 ## Concat (++)
 ```haskell
--- Concat1
+-- ++
 (++) :: [a] -> [a] -> [a]
 [1, 2] ++ [3, 4]  -- [1, 2, 3, 4]
 "Hello " ++ "World"  -- "Hello World"
 
--- Concat2 (Same result for different format)
+-- concat
 concat :: Foldable t => t [a] -> [a]
 concat [[1, 2], [3, 4]]
 concat ["Hello ", "World"]
@@ -182,7 +212,7 @@ tail [10, 20, 30]   -- [20, 30]
 tail "Haskell"   -- "askell"
 ```
 
-## take
+## take, drop
 ```haskell
 -- Return first few elements
 take :: Int -> [a] -> [a]
@@ -190,18 +220,15 @@ take 3 [1, 2, 3, 4, 5]  -- [1, 2, 3]
 take 0 [1, 2, 3]  -- []
 take 10 [1, 2, 3]  -- [1, 2, 3]
 
-take 4 "Haskell"           -- "Hask"
-```
+take 4 "Haskell"  -- "Hask"
 
-## drop
-```haskell
 -- Drop first few elements
 drop :: Int -> [a] -> [a]
 drop 3 [1, 2, 3, 4, 5]  -- [4, 5]
 drop 0 [1, 2, 3]  -- [1, 2, 3]
 drop 10 [1, 2, 3]  -- []
 
-drop 4 "Haskell"           -- "ell"
+drop 4 "Haskell"  -- "ell"
 ```
 
 ## Indexing Operator (!!)
@@ -214,8 +241,7 @@ drop 4 "Haskell"           -- "ell"
 
 ---
 
-# main, do
-- Haskell only executes main, everything must be wrapped inside main
+# IO Sequencing
 - `do` is special syntax allows sequencing actions
 ```haskell
 -- Sequence actions
@@ -228,6 +254,7 @@ drop 4 "Haskell"           -- "ell"
 ```
 
 ```haskell
+-- With do syntactic sugar
 main :: IO ()
 main = do
 	putStr "Your name: "
@@ -239,28 +266,12 @@ main :: IO ()
 main =
 	putStr "Your name: " >>
 	getLine >>= \name
-	-> putStrLn ("Hello, " ++ name)
-```
-
-## Can Separate
-```haskell
-askName :: IO String
-askName = do
-	putStr "Your name: "
-	getLine
-
-greet :: String -> IO ()
-greet name = putStrLn ("Hello, " ++ name)
-
-main :: IO ()
-main = do
-	name <- askName
-	greet name
+		-> putStrLn ("Hello, " ++ name)
 ```
 
 ## 2 Types of Assignment
 ```haskell
-x = 7  -- For most types
+x = getNum  -- For most types
 
 -- For IO types
 main = do
@@ -269,25 +280,18 @@ main = do
 
 main =
 	getLine >>= \name ->  -- If not inside do (Must pass to func)
-	putStrLn "Hello, " ++ name
+		putStrLn "Hello, " ++ name
 ```
 
 ---
 
 # Data Types
 ## Boolean
-- Type constructor = Data constructor | Data constructor
 ```haskell
 data Bool = False | True
--- Type constructor (Datatype Typename)
 ```
 
 ## Numeric Types
-- Every Int, Integer is an Integral
-- Every Integral, Fractional is a Num
-- Every Float, Double is a Fractional
-![Numeric Types](https://ksvi.mff.cuni.cz/~dingle/2022-3/npp/haskell_numeric.svg)
-
 ```haskell
 -- Integral Numbers
 x :: Int  -- 64 bit
@@ -312,22 +316,6 @@ half = 3 % 4  -- 3/4 exactly, no rounding
 import Data.Scientific
 x :: Scientific
 x = 12345e-3  -- 12.345 as Scientific
-
-
-
--- Complex Numbers
-import Data.Complex
-z :: Complex Double  -- Complex number with real, imaginary parts
-z = 2 :+ 3  -- 2 + 3i
-```
-
-## Tuples
-```haskell
-showPerson :: (String, Int) -> String
-showPerson (name, age) = name ++ " is " ++ age ++ " years old."
-
-divide :: Int -> Int -> (Int, Int)
-divide x y = (x `div` y, x `mod` y)
 ```
 
 ## Lists
@@ -362,7 +350,7 @@ add5 = add 5
 add5 :: Int -> Int
 add5 y = 5 + y
 
-add5 10  -- =15
+add5 10  -- 15
 ```
 
 ## Built-in Curry, Uncurry
@@ -391,7 +379,6 @@ g' (x, y) = g x y
 
 ---
 
-
 # Type Signature
 ```haskell
 functionName :: inputType1 -> inputType2 -> ... -> outputType
@@ -411,6 +398,12 @@ add :: Num a => a -> a -> a
 - Parametric polymorphism (Fully polymorphic)
 - Constrained polymorphism (Ad-hoc polymorphic)
 
+### Concrete Type
+```haskell
+addOne :: Int -> Int
+addOne x = x + 1
+```
+
 ### Parametric Polymorphism
 - Function doesn't care about the type
 - Function works exactly the same for every type
@@ -423,7 +416,7 @@ pair x y = (x, y)
 ### Constrained Polymorphism
 - `a` is still a type variable
 - But it must belong to `Num` typeclass
-- This restricts the possible types (Cannot be `Bool`, `[Char]`)
+- This restricts the possible types
 ```haskell
 add :: a -> a -> a
 add x y = x + y  -- Error, cannot +
@@ -438,10 +431,103 @@ add :: (Eq a, Num a) => a -> a -> a
 
 ---
 
+# Type Aliases
+```haskell
+type Name = String
+type Seconds = Double
+type Row = [String]
+```
+
+---
+
+# Algebraic Data Types
+```haskell
+-- Sum types
+data Difficulty = Insane | Hard | Medium | Easy
+	deriving (Show, Read)
+	
+-- Product types
+data Person = Person String Int
+
+-- Mix
+data Shape
+	= Circle Double
+	| Rectangle Double Double
+	
+-- General data type
+data Pair a b = Pair a b
+Pair 1 "hello"   -- Pair Int String
+Pair True False  -- Pair Bool Bool
+```
+
+## Deconstruct
+```haskell
+data Shape
+	= Circle Float  -- Radius
+	| Rectangle Float Float  -- Width, height
+	| Triangle Float Float Float  -- 3 sides
+
+-- Deconstruct
+area :: Shape -> Float
+area (Circle r) = pi * r * r
+area (Rectangle w h) = w * h
+area (Triangle a b c) =
+  let s = (a + b + c) / 2
+  in sqrt (s * (s - a) * (s - b) * (s - c))
+```
+
+## Simple
+```haskell
+-- Constructor
+data Person = Person String Int  -- Name, age
+
+-- Create
+alice = Person "Alice" 18
+
+-- Get attributes
+getAge :: Person -> Int
+getAge (Person _ age) = age
+
+-- Cannot modify directly
+setAge :: Int -> Person -> Person
+setAge newAge (Person name _) =
+	Person name newAge
+```
+
+## Records
+- With named fields
+```haskell
+data Person = Person
+	{ name :: String
+	, age  :: Int
+	}
+
+-- Create
+alice = Person
+	{ name = 'Alice'
+	, age  = 20
+	}
+
+-- Get attributes
+name alice
+age alice
+
+-- Update fields
+birthday :: Person -> Person
+birthday p =
+	p { age = age p + 1 }
+	
+-- Pattern matching
+greet :: Person -> String
+greet Person { name = n } =
+	'Hello ' ++ n
+```
+
+---
+
 # Typeclass
 - Any data type that wants to be part of this `Shape` typeclass must provide implementations for these functions
 ```haskell
-type Shape :: * -> Constraint
 class Shape a where
 	area :: a -> Double
 	perimeter :: a -> Double
@@ -465,11 +551,9 @@ instance Shape Circle where
 data Color = Red | Green | Blue deriving (Show, Eq, Ord)
 
 -- Can use
-show Red
-Red == Green
-
--- Order by defined order
-Red < Green < Blue
+show Red  -- Show
+Red == Green  -- Eq
+compare Red Green  -- Ord (Red < Green < Blue)
 ```
 
 ## With Deriving vs Without
@@ -484,6 +568,27 @@ instance Eq MyBook where
 	Book1 == Book1 = True
 	Book2 == Book2 = True
 	_ == _ = False
+```
+
+## Custom Instances
+```haskell
+data Score = Score
+	{ playerName :: Name
+	, difficulty :: Difficulty
+	, timeTaken :: Seconds
+	}
+
+-- Ignore playerName when check for equal
+instance Eq Score where
+	a == b =
+		timeTaken a == timeTaken b &&
+		difficulty a == difficulty b
+
+-- Sort by timeTaken, then by difficulty
+instance Ord Score where
+	compare a b =
+		compare (timeTaken a) (timeTaken b) <>
+		compare (difficulty a) (difficulty b)
 ```
 
 ---
@@ -517,13 +622,14 @@ triple x = x * 3
 (\x -> x * 3) :: Integer -> Integer
 ```
 
-## Function Composition
+## Function Composition (Right to Left)
 ```haskell
 -- Without function composition
-process xs = reverse (sort (filter even xs))
+process xs = reverse (sort (filter xs))
 
 -- With function composition
-process = reverse . sort . filter even
+process xs = reverse . sort . filter $ xs
+process = reverse . sort . filter  -- Can cancel out
 ```
 
 ---
@@ -534,18 +640,38 @@ isItTwo :: Integer -> Bool
 isItTwo 2 = True
 isItTwo _ = False
 
--- Tuple
-fst3 :: (a, b, c) -> a
-fst3 :: (x, _, _) = x
+-- Accept tuple as a whole
+remain :: (a, a, a) -> (a, a, a)
+remain x = x
+
+-- Destructure tuple
+des :: (a, a, a) -> a
+des (x, y, z) -> x + y + z
+
+-- Ignore some
+getX :: (a, b, c) -> a
+getX (x, _, _) = x
 ```
 
 ## Case Expression
 ```haskell
-area shape =
-    case shape of
-        Circle r -> pi * r * r
-        Rect w h -> w * h
-        _ -> 0
+area shape = case shape of
+	Circle r -> pi * r * r
+	Rect w h -> w * h
+	_        -> 0
+
+-- Ord
+case compare a b of
+	LT -> a
+	GT -> b
+	EQ -> 0
+
+-- Lambda case
+{-# LANGUAGE LambdaCase #-}
+area shape = \case
+	Circle r -> pi * r * r
+	Rect w h -> w * h
+	_        -> 0
 ```
 
 ---
@@ -560,19 +686,7 @@ absolute x
 
 -- Inline if
 absolute :: Int -> Int
-absolute x = if x <0 then -x else x
-```
-
-## Long Example
-```haskell
-bmiTell :: Double -> Double -> String
-bmiTell weight height
-    | bmi <= 18.5 = "underweight"
-    | bmi <= 25.0 = "normal"
-    | bmi <= 30.0 = "overweight"
-    | otherwise   = "obese"
-  where
-    bmi = weight / height^2
+absolute x = if x < 0 then -x else x
 ```
 
 ---
@@ -585,8 +699,8 @@ fac n = n * fac(n - 1)
 
 -- Recursion on list
 product :: Num a => [a] -> a
-product[] = 1
-product(x:xs) = x * product xs
+product []     = 1
+product (x:xs) = x * product xs
 ```
 
 ## Mutual Recursion
@@ -649,7 +763,7 @@ map (\x -> x^2) [1..9]  -- Syntactic sugar for map function
 ## Nested Loops
 ```haskell
 -- Example (Pythagorean triples)
-[(a,b,c) |
+[ (a,b,c) |
     a <- [1..20],
     b <- [a..20],
     c <- [b..20],
@@ -680,75 +794,6 @@ primes :: Int -> [Int]
 primes n = [x | x <- [2..n], prime x]
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## OR
-```haskell
-data Direction = North | South | East | West
-
-go :: Direction -> String
-go North = "Up"
-go South = "Down"
-go East = "Right"
-go West = "Left"
-```
-
-## AND
-```haskell
-Person :: String -> Int -> Person
-data Person = Person String Int
-
-alice = Person "Alice" 25
-
--- Deconstruct
-getName :: Person -> String
-getName (Person name age) = name
-
-getName (Person "Eve" 22)  -- Eve
-```
-
-## AND with OR
-```haskell
-data Shape
-	= Circle Float  -- Radius
-	| Rectangle Float Float  -- Width, height
-	| Triangle Float Float Float  -- 3 sides
-
--- Deconstruct
-area :: Shape -> Float
-area (Circle r) = pi * r * r
-area (Rectangle w h) = w * h
-area (Triangle a b c) =
-  let s = (a + b + c) / 2
-  in sqrt (s * (s - a) * (s - b) * (s - c))
-```
-
-## Can be General
-```haskell
-data Pair a b = Pair a b
-Pair 1 "hello"  -- Pair Int String
-Pair True False  -- Pair Bool Bool
-```
-
 ---
 
 # Monads (Maybe, Either)
@@ -771,4 +816,116 @@ safeDiv x y = Right (x `div` y)  -- Right for Int
 ```
 
 ---
+
+# Semigroups
+```haskell
+-- Semigroup typeclass
+class Semigroup a where
+	(<>) :: a -> a -> a
+
+-- Lists have semigroup instance
+"hello" <> " world"  -- hello world
+[1,2] <> [3,4]  -- [1, 2, 3, 4]
+
+-- Tuple semigroup
+("hello", [1]) <> (" world", [2])  -- ("hello world", [1,2])
+
+-- Custom semigroup instance (Choose better score)
+instance Semigroup Score where
+	s1 <> s2
+		| timeTaken s1 < timeTaken s2 = s1
+		| otherwise                   = s2
+```
+
+---
+
+# Monoids
+- A semigroup with an identity element `mempty`
+```haskell
+-- Monoid typeclass
+class Semigroup a => Monoid a where
+	mempty  :: a
+	mappend :: a -> a -> a
+```
+
+```haskell
+-- Just semigroup
+data Sum = Sum Int
+	deriving (Show, Eq)
+
+instance Semigroup Sum where
+	Sum a <> Sum b = Sum (a + b)
+	
+sconcat [Sum 3, Sum 7, Sum 2]  -- Sum 12
+sconcat []  -- Error
+
+
+
+-- Use monoid to handle empty list
+instance Monoid Sum where
+	mempty = Sum 0
+
+mconcat [Sum 3, Sum 7, Sum 2]
+mconcat []  -- Sum 0
+```
+
+---
+
+# Functors
+```haskell
+fmap  :: Functor f => (a -> b) -> f a -> f b
+(<$>) :: Functor f => (a -> b) -> f a -> f b  -- Infix version
+```
+
+- `map` function only works on lists
+- `fmap`, `<$>` can work on other types
+```haskell
+map (+1) [1, 2, 3]
+map (+1) Nothing  -- Error (Only work on list)
+
+-- map is subset of fmap
+fmap (+1) [1, 2, 3]
+
+-- Maybe
+fmap (+1) Just 10
+fmap (+1) Nothing
+
+-- Either (Leave the Left intact)
+fmap (++ "!") (Right "Hello")  -- Right "Hello!"
+fmap (++ "!") (Left "Error")   -- Left "Error"
+
+-- IO
+fmap (++ " World") (return "Hello")  -- "Hello World"
+```
+
+## Custom Functor Instance
+```haskell
+instance Functor Box where
+	fmap f (Box x) = Box (f x)
+
+fmap (*2) (Box 10)  -- Box 20
+(*2) <$> (Box 10)   -- Box 20
+```
+
+---
+
+# Applicative
+- Combine all functions with all values
+- Cartesian product
+```haskell
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+
+[(+1), (*2)] <*> [1, 2, 3]  -- [2, 3, 4, 2, 4, 6]
+```
+
+## Functor + Applicative
+```haskell
+add :: Int -> Int -> Int
+add x y = x + y
+
+add <$> [1, 2] <*> [10, 20]
+-- [add 1, add 2] <*> [10, 20]
+-- [add 1 10, add 1 20, add 2 10, add 2 20]
+-- [11, 21, 12, 22]
+```
 

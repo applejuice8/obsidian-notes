@@ -35,6 +35,9 @@ git clone https://github.com/applejuice8/course-enrollment.git
 - Connect local git to remote git
 ```bash
 git remote add origin https://github.com/applejuice8/portfolio.git
+
+# Check current remote location
+git remote -v
 ```
 
 ---
