@@ -12,7 +12,7 @@
 # Template Inheritance
 
 ## base.html
-```html
+```jinja2
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +26,7 @@
 ```
 
 ## index.html
-```html
+```jinja2
 {% extends 'base.html' %}
 
 {% block title %}Home{% endblock %}
@@ -48,9 +48,16 @@
 ```
 
 ## index.html
-```html
+```jinja2
 {% include 'header.html' %}
 <p>Welcome to the homepage!</p>
+```
+
+---
+
+# Link CSS, JS Files
+```jinja2
+<link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
 ```
 
 ---
@@ -62,7 +69,7 @@ def index():
     return render_template('index.html', name='Adam')
 ```
 
-```html
+```jinja2
 <h1>Hello, {{ name }}!</h1>
 ```
 
@@ -73,7 +80,7 @@ def index():
     return render_template('index.html', users=['Adam', 'Alex', 'Joe'])
 ```
 
-```html
+```jinja2
 <ul>
     {% for user in users %}
         <li>{{ user }}</li>
@@ -82,7 +89,7 @@ def index():
 ```
 
 # Conditionals
-```html
+```jinja2
 {% if age >= 18 %}
     <p>You are an adult.</p>
 {% else %}
@@ -91,7 +98,7 @@ def index():
 ```
 
 # Loops
-```html
+```jinja2
 {% for user in users %}
     <li class="{{ loop.cycle('odd', 'even') }}">
         {{ loop.index }}. {{ user.name }}
@@ -100,35 +107,35 @@ def index():
     </li>
 {% endfor %}
 
-<!-- Loop over dict -->
+{# Loop over dict #}
 {% for key, value in user.items() %}
     <p>{{ key }}: {{ value }}</p>
 {% endfor %}
 
-<!-- Attributes of loop -->
-{{ loop.index }}  <!-- 1-based -->
-{{ loop.index0 }}  <!-- 0-based -->
+{# Attributes of loop #}
+{{ loop.index }}  {# 1-based #}
+{{ loop.index0 }}  {# 0-based #}
 {{ loop.first }}
 {{ loop.last }}
 {{ loop.length }}
 ```
 
 # Filters
-```html
+```jinja2
 <p>Uppercase: {{ name|upper }}</p>
 <p>Lowercase: {{ name|lower }}</p>
 <p>Title case: {{ name|title }}</p>
 <p>Length: {{ name|length }}</p>
 <p>Default: {{ name|default('None') }}</p>
 
-<!-- Can chain -->
+{# Can chain #}
 {{ name|upper|length|default('None') }}
 ```
 
 ---
 
 # Set Variables
-```html
+```jinja2
 {% set name = user.first_name + ' ' + user.last_name %}
 <p>{{ name }}</p>
 ```
@@ -137,7 +144,7 @@ def index():
 
 # Macros
 - Reusable code snippets
-```html
+```jinja2
 {% macro user_card(user) %}
 	<div class="card">
 	    <h3>{{ user.name|title }}</h3>
