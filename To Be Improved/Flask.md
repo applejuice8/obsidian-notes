@@ -1,6 +1,7 @@
 ![Flask](https://www.vectorlogo.zone/logos/palletsprojects_flask/palletsprojects_flask-icon~v2.svg)
 
 ---
+[Reference](https://hackersandslackers.com/series/build-flask-apps/)
 
 # Commands
 ```bash
@@ -15,7 +16,6 @@ flask run
 # Simple
 ```python
 from flask import Flask
-
 
 app = Flask(__name__)
 
@@ -257,32 +257,261 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-	ENVIRONMENT = os.get_env('ENVIRONMENT')
-	FLASK_APP = 'my-app'
-	FLASK_DEBUG = True
-	SECRET_KEY = 'GDtfD^&$%@^8tgYjD'
+	# General
+	ENVIRONMENT = os.getenv('ENVIRONMENT')
+	FLASK_APP = os.getenv('FLASK_APP')
+	FLASK_DEBUG = os.getenv('FLASK_DEBUG')
+	SECRET_KEY = os.getenv('SECRET_KEY')
+	
+	# Folders
+	STATIC_FOLDER = 'static'
+    TEMPLATES_FOLDER = 'templates'
+
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 ```
 
 ```python
-# app.py
+# wsgi.py
 from flask import Flask
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
 ```
 
+---
 
+# Application Factory
+- Instead of 1 `app.py`, entire `application/` folder is app
+```bash
+/app
+├── /application
+│   ├── /static
+│   └── /templates
+│   ├── __init__.py  # Creation of app
+│   ├── auth.py
+│   ├── forms.py
+│   ├── models.py
+│   └── routes.py
+├── config.py
+└── wsgi.py  # App gateway
+```
 
+## application/`__init__.py`
+```python
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_redis import FlaskRedis
 
+db = SQLAlchemy()
+r = FlaskRedis()
 
+def init_app():
+    app = Flask(__name__)
+    app.config.from_object('config.Config')
 
+    # Initialize plugins
+    db.init_app(app)
+    r.init_app(app)
 
+    with app.app_context():
+        # Include routes
+        from . import routes
+        
+        # Create db tables
+        db.create_all()
 
+        # Register blueprints
+        app.register_blueprint(auth.auth_bp)
+        app.register_blueprint(admin.admin_bp)
 
+        return app
+```
 
+## wsgi.py (App's Entry Point)
+```python
+from application import init_app
 
+app = init_app()
 
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
+```
 
+---
+
+# Blueprints
+```python
+from flask import Blueprint
+
+home_bp = Blueprint(
+    'home_bp', __name__,
+    template_folder='templates',
+    static_folder='static'
+)
+
+@home_bp.route('/')
+def home():
+	return
+```
+
+## Register Blueprints in `__init__.py`
+```python
+from flask import Flask
+
+def init_app():
+    app = Flask(__name__)
+    app.config.from_object('config.Config')
+
+    with app.app_context():
+        # Register blueprints
+        app.register_blueprint(auth.auth_bp, prefix='/auth')
+        app.register_blueprint(admin.admin_bp, prefix='/admin')
+
+        return app
+```
+
+## In Jinja
+```jinja2
+<a href="{{ url_for('home_bp.home') }}">Home</a>
+```
+
+---
+
+# SQLAlchemy
+```python
+# models.py
+from . import db
+
+class User(db.Model):
+	__tablename__ = 'user'
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+    
+    # Different with non-flask SQLAlchemy
+	id: Mapped[int] = mapped_column(Integer)
+```
+
+---
+
+# Auth
+
+## Models
+- Models which inherit UserMixin gains access to 4 methods `.is_authenticated`, `is_active`, `is_anonymous`, `get_id`
+```python
+from . import db
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
+class User(UserMixin, db.Model):
+	__tablename__ = 'user'
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+    
+	def set_password(self, password):
+        self.password = generate_password_hash(
+            password,
+            method='sha256'
+        )
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+```
+
+## Signup
+```python
+from flask import flash, request, session, url_for
+from flask_login import login_required, logout_user, current_user, login_user
+
+# Signup
+@auth_bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
+    if form.validate_on_submit():
+        existing_user = User.query
+						    .filter_by(email=form.email.data)
+						    .first()
+        if existing_user is None:
+            user = User(
+                name=form.name.data,
+                email=form.email.data,
+                website=form.website.data
+            )
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return redirect(url_for('main_bp.dashboard'))
+        flash('A user already exists with that email address.')
+
+    return render_template('signup.jinja2', form=form)
+```
+
+## Login
+```python
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    # If user is logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('main_bp.dashboard'))
+
+	# Validate login attempt
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query
+			        .filter_by(email=form.email.data)
+			        .first()
+        if user and user.check_password(form.password.data):
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(
+	            next_page or url_for('main_bp.dashboard')
+			)
+        flash('Invalid username/password combination')
+        return redirect(url_for('auth_bp.login'))
+    
+    return render_template('login.jinja2', form=form)
+```
+
+## Login Helpers
+```python
+# Check if user is logged-in on every page load
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id is not None:
+        return User.query.get(user_id)
+    return None
+
+# Redirect unauthorized
+@login_manager.unauthorized_handler
+def unauthorized():
+    flash('You must be logged in to view that page.')
+    return redirect(url_for('auth_bp.login'))
+```
+
+## Login Required
+```python
+from flask_login import current_user, login_required
+
+@main_bp.route('/', methods=['GET'])
+@login_required
+def dashboard():
+	return
+```
+
+## Logout
+```python
+@main_bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth_bp.login'))
+```
 
 ---
 
@@ -335,8 +564,8 @@ def login():
     {{ form.hidden_tag }}  {# form.csrf_token #}
 
 	{{ form.username.label }}
-	{{ form.username() }}
-
+	{{ form.username(placeholder='Adam') }}  {# Attributes #}
+	
     {{ form.submit() }}
 </form>
 ```
@@ -544,4 +773,33 @@ class LoginForm(FlaskForm):
 
 ---
 
+# Flask RESTful
+```python
+from flask import Flask
+from flask_restful import Api, Resource
 
+app = Flask(__name__)
+api = Api(app)
+
+users = {
+    1: {'name': 'Alice'},
+    2: {'name': 'Bob'}
+}
+
+class User(Resource):
+    def get(self, user_id):
+        return users.get(user_id, 'User not found'), 200
+
+    def put(self, user_id):
+        users[user_id] = {'name': 'Updated'}
+        return {'message': 'User updated'}
+
+    def delete(self, user_id):
+        users.pop(user_id, None)
+        return {'message': 'User deleted'}
+
+api.add_resource(User, '/users/<int:user_id>')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```

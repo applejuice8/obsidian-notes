@@ -55,9 +55,20 @@
 
 ---
 
-# Link CSS, JS Files
+# URL For
+
+## Link CSS, JS Files
 ```jinja2
+{# CSS #}
 <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+
+{# JS #}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+```
+
+## Render Image
+```jinja2
+<img src="{{ url_for('static', filename='img/logo.png') }}"/>
 ```
 
 ---
