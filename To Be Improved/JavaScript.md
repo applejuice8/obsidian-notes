@@ -460,6 +460,11 @@ for (let i = 0; i < cars.length; i++) {
 }
 
 // Method 2
+for (const car of cars) {
+  console.log(car);
+}
+
+// Method 3
 cars.forEach(myFunc);
 
 cars.forEach(car => console.log(car));
