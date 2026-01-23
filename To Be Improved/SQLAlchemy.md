@@ -72,6 +72,7 @@ class User(Base):
 # Relationships
 
 ## Simple FK
+- `back_populates` allows student.course
 ```python
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
@@ -86,7 +87,7 @@ class Course(Base):
     name: Mapped[str] = mapped_column(String(50))
 
     students: Mapped[list['Student']] = relationship(
-	    back_populates='course'  # Can course.students
+	    back_populates='course'  # Can student.course
     )
 
 # ----------------------------
@@ -103,7 +104,7 @@ class Student(Base):
 	    nullable=False
 	)
     course: Mapped['Course'] = relationship(
-	    back_populates='student'  # Can student.course
+	    back_populates='student'  # Can course.students
 	)
 ```
 
