@@ -2,7 +2,14 @@
 
 ---
 
-## Panda's fillna()
+# Count Missing Cells in Each Column
+```python
+df.isnull().sum()
+```
+
+---
+
+# Panda's fillna()
 ```python
 # Fill with constant
 df['name'].fillna('Unknown', inplace=True)
@@ -28,6 +35,7 @@ df = df.dropna(subset=['name', 'age'])  # Specific columns
 ---
 
 # Simple Imputer
+- Default strategy is mean
 ```python
 from sklearn.impute import SimpleImputer
 
@@ -35,8 +43,9 @@ from sklearn.impute import SimpleImputer
 imp_constant = SimpleImputer(strategy='constant', fill_value=13)
 df[['Score'] = imp_constant.fit_transform(df[['Score']])
 
-# Mean
+# Mean (Default)
 imp_mean = SimpleImputer(strategy='mean')
+imp_mean = SimpleImputer()
 df[['Score'] = imp_mean.fit_transform(df[['Score']])
 
 # Median

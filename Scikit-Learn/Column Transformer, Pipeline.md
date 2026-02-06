@@ -144,7 +144,3 @@ pipe.fit(X_train, y_train)
 
 
 
-
-![Column Transformer vs Pipeline](https://miro.medium.com/v2/resize:fit:1190/1*I0F-ALOL8J8f6V33CDKyrA.png)
-
-

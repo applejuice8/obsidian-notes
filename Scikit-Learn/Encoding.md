@@ -5,6 +5,7 @@
 - Unranked data
 - Convert each category into a unique integer
 - Even though no ranking, models may interpret as rankings, safer to use OHE on X
+- Models that doesn't care about rankings (Decision tree, Random forest, Gradient boosted trees)
 - Only use on target labels (y)
 ![Label Encoder](https://media.geeksforgeeks.org/wp-content/uploads/20250724112756132446/categorical_data_encoding_2.webp)
 ```python
