@@ -1,0 +1,85 @@
+
+---
+
+# Grid Search CV
+- Tries all combinations of parameters specified
+- Evaluates each combination using CV
+- Selects the best set of hyperparameters
+- `n_jobs` specifies number of jobs to run in parallel (-1 means maximum)
+```python
+from sklearn.model_selection import GridSearchCV
+
+# Parameters specific to the model used
+param_grid = [{
+	'n_estimators': [500, 1000, 1500],
+	'min_samples_split': [5, 10, 15],
+	'min_samples_leaf': [1, 2, 4],
+	'max_depth': [10, 20, 30]
+}]
+
+search = GridSearchCV(
+	estimator=RandomForestClassifier(),
+	param_grid=param_grid,
+	cv=2,
+	scoring='accuracy',
+	n_jobs=-1  # Use max processors
+)
+
+# Fit
+search.fit(X_train, y_train)
+```
+
+---
+
+# Randomized Search CV
+- Instead of testing all permutations, only test `n_iter` of it
+- Cannot find absolute best, but good enough
+- Extra parameter `n_iter` and `random_state`, others same
+```python
+from sklearn.model_selection import RandomizedSearchCV
+
+search = RandomizedSearchCV(
+	# In addition to GridSearchCV params
+	n_iter=10,
+	random_state=11
+)
+```
+
+---
+
+# If Use Pipeline
+- Left is parent, Right is child (Attribute)
+- `animal__dog__pitbull` means pitbull inside dog inside animal
+```python
+preprocessor = ColumnTransformer([
+    ('num', StandardScaler(), num_cols),
+    ('cat', OneHotEncoder(handle_unknown='ignore'), cat_cols)
+])
+
+pipe = Pipeline([
+    ('preprocessor', preprocessor),
+    ('model', LogisticRegression(max_iter=1000))
+])
+
+# CV
+param_grid = {
+    'preprocessor__num__with_mean': [True, False],
+    'preprocessor__cat__min_frequency': [None, 10],
+    'model__C': [0.01, 0.1, 1]
+}
+
+search = RandomizedSearchCV(
+	param_grid=param_grid
+	n_iter=10,
+	random_state=11
+)
+```
+
+---
+
+## Metrics
+```python
+search.best_params_  # Best params
+search.best_score_   # Average CV score with best params
+search.score(X_test, y_test)  # Final evaluation
+```

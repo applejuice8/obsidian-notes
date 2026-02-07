@@ -3,7 +3,7 @@
 
 # Polynomial Features
 - Only use on linear models (Linear regression, Ridge, Lasso, Elastic Net, Perceptron)
-- Models learn nonlinearities automatically, don’t need to use (Decision tree, Random forest, Gradient Boosting, HistGB, AdaBoost, KNN, SVM with poly kernel, MLP)
+- Models learn nonlinearities automatically, don’t need to use (Decision tree, Random forest, Gradient Boosting, KNN)
 ```python
 from sklearn.preprocessing import PolynomialFeatures
 
@@ -16,7 +16,11 @@ X_poly = poly.fit_transform(X)
 - Full polynomial (`x1, x2 —> x1, x2, x1x2, x1^2, x2^2`)
 - Interaction only (`x1, x2 —> x1, x2, x1x2`)
 ```python
-poly = PolynomialFeatures(degree=2, include_bias=False, interaction_only=True)
+poly = PolynomialFeatures(
+	degree=2,
+	include_bias=False,
+	interaction_only=True
+)
 ```
 
 ---
