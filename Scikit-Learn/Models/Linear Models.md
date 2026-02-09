@@ -33,6 +33,7 @@ lr = LogisticRegression(
 	C=1.0,
 	
 	max_iter=1000,
+	class_weight='balanced',  # Cares more about minority class
 	random_state=42
 )
 ```
