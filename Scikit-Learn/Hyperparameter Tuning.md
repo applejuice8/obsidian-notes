@@ -10,12 +10,12 @@
 from sklearn.model_selection import GridSearchCV
 
 # Parameters specific to the model used
-param_grid = [{
+param_grid = {
 	'n_estimators': [500, 1000, 1500],
 	'min_samples_split': [5, 10, 15],
 	'min_samples_leaf': [1, 2, 4],
 	'max_depth': [10, 20, 30]
-}]
+}
 
 search = GridSearchCV(
 	estimator=RandomForestClassifier(),

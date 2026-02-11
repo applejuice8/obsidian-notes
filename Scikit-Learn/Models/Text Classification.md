@@ -44,7 +44,7 @@ CountVectorizer(
 
 # TF-IDF
 TfidfVectorizer(
-	# Other parameters same (Except binary)
+	# Other params same
     sublinear_tf=True,  # Use 1 + log(tf) 
     
     norm='l2',
