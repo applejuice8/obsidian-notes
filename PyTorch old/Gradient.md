@@ -18,3 +18,18 @@ z = z.mean()
 z.backward()
 x.grad  # tensor([0.0160, 3.3650, 4.5153])
 ```
+
+# Disable Gradient Tracking
+```python
+x = torch.rand(3, requires_grad=True)
+
+# Method 1
+x.requires_grad_(False)
+
+# Method 2
+y = x.detach()
+
+# Method 3
+with torch.no_grad():
+	y = x + 2  # No grad_fn=<AddBackward0>
+```
