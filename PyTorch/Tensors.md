@@ -8,11 +8,33 @@
 # Hardcode
 x = torch.tensor([[1, 2],[3, 4]])
 
+# Default float32
+x = torch.zeros(5, 3)
+x = torch.zeros((5, 3), dtype=torch.int16)
+
+
+
 # Specified shape
-shape = (2, 3, )  # 2x3
+shape = (2, 3)  # 2x3
 x = torch.rand(shape)
 x = torch.ones(shape)
 x = torch.zeros(shape)
+```
+
+## Random Tensors
+```python
+torch.manual_seed(1729)
+r1 = torch.rand(2, 2)
+r2 = torch.rand(2, 2)
+
+# Same as r1
+torch.manual_seed(1729)
+r3 = torch.rand(2, 2)
+```
+
+## Element-wise Arithmetic
+```python
+
 ```
 
 ## From Another Tensor
