@@ -12,8 +12,6 @@ x = torch.tensor([[1, 2],[3, 4]])
 x = torch.zeros(5, 3)
 x = torch.zeros((5, 3), dtype=torch.int16)
 
-
-
 # Specified shape
 shape = (2, 3)  # 2x3
 x = torch.rand(shape)
@@ -30,11 +28,6 @@ r2 = torch.rand(2, 2)
 # Same as r1
 torch.manual_seed(1729)
 r3 = torch.rand(2, 2)
-```
-
-## Element-wise Arithmetic
-```python
-
 ```
 
 ## From Another Tensor
@@ -61,6 +54,43 @@ t = torch.from_numpy(n)
 # Changes both
 t.add_(1)
 ```
+
+---
+
+# Mathematical Operations
+
+## Element-wise Arithmetic
+- Only if tensors same size
+```python
+ones = torch.ones(2, 3)
+twos = ones * 2
+threes = twos + 1
+```
+
+## Mathematical Operations
+```python
+# Absolute value
+torch.abs(x)
+
+# Standard deviation, mean
+torch.std(x)
+torch.mean(x)
+torch.std_mean(x)  # Tuple (std, mean)
+
+# Maximum
+torch.max(x)
+
+# Uncommon
+# Inverse sine
+torch.asin(x)
+
+# Determinant
+torch.det(x)
+
+# Singular value decomposition
+torch.svd(x)
+```
+
 
 ---
 
